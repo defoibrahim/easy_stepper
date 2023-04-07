@@ -352,7 +352,7 @@ class _EasyStepperState extends State<EasyStepper> {
               Padding(
                 padding: EdgeInsets.only(
                   top: axis == Axis.horizontal
-                      ? (widget.stepRadius - widget.lineDotRadius)
+                      ? (widget.stepRadius - (widget.lineDotRadius + 10))
                       : 0,
                   bottom: axis == Axis.vertical && widget.showTitle ? 10 : 0,
                 ),

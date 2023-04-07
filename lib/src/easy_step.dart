@@ -7,13 +7,13 @@ export 'package:flutter/material.dart';
 
 class EasyStep {
   /// The icon displayed in the step, you can change size & color for different status from main stepper.
-  final Icon? icon;
+  final Widget? icon;
 
   /// The icon displayed in the step, when this step is finished. if null the main icon remain displayed.
-  final Icon? finishIcon;
+  final Widget? finishIcon;
 
   /// The icon displayed in the step, when this step is active. if null the default loading widget displayed.
-  final Icon? activeIcon;
+  final Widget? activeIcon;
 
   /// Create your own Widget for step, if this property is set `icon`, `activeIcon` and `finishIcon` will be ignored..
   final Widget? customStep;

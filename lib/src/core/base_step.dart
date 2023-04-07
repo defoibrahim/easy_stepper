@@ -2,6 +2,8 @@ import 'package:easy_stepper/easy_stepper.dart';
 import 'package:easy_stepper/src/core/easy_border.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 /// Callback is fired when a step is reached.
 typedef OnStepReached = void Function(int index);
 
@@ -72,114 +74,111 @@ class BaseStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: (radius * 2) + (padding ?? 0),
-      height: showTitle ? radius * 3.5 : radius * 2,
-      child: Column(
-        children: [
-          Material(
-            color: Colors.transparent,
-            shape: stepShape == StepShape.circle ? const CircleBorder() : null,
-            clipBehavior: Clip.antiAlias,
-            borderRadius: stepShape != StepShape.circle
-                ? BorderRadius.circular(stepRadius ?? 0)
-                : null,
-            child: InkWell(
-              onTap: onStepSelected,
-              canRequestFocus: false,
-              radius: radius,
-              child: Container(
-                width: radius * 2,
-                height: radius * 2,
-                decoration: BoxDecoration(
-                  shape: stepShape == StepShape.circle
-                      ? BoxShape.circle
-                      : BoxShape.rectangle,
-                  borderRadius: stepShape != StepShape.circle
-                      ? BorderRadius.circular(stepRadius ?? 0)
-                      : null,
-                  color: isFinished
-                      ? finishedBackgroundColor ??
-                          Theme.of(context).colorScheme.primary
-                      : isActive
-                          ? activeStepBackgroundColor ?? Colors.transparent
-                          : unreachedBackgroundColor ?? Colors.transparent,
-                ),
-                alignment: Alignment.center,
-                child: showStepBorder
-                    ? EasyBorder(
-                        borderShape: stepShape == StepShape.circle
-                            ? BorderShape.Circle
-                            : BorderShape.RRect,
-                        radius: stepShape != StepShape.circle
-                            ? Radius.circular(stepRadius ?? 0)
-                            : const Radius.circular(0),
-                        color: isActive
-                            ? activeStepBorderColor ??
-                                Theme.of(context).colorScheme.primary
-                            : isFinished
-                                ? finishedBorderColor ?? Colors.transparent
-                                : unreachedBorderColor ?? Colors.grey.shade400,
-                        strokeWidth: borderThickness,
-                        dashPattern: borderType == BorderType.normal
-                            ? [1, 0]
-                            : dashPattern,
-                        child: isActive && showLoadingAnimation
+    return Stack(
+      children: [
+        Container(
+          width: (radius * 2) + (padding ?? 0),
+          height: 45,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 5,
+              ),
+              Material(
+                color: Colors.transparent,
+                shape:
+                    stepShape == StepShape.circle ? const CircleBorder() : null,
+                clipBehavior: Clip.antiAlias,
+                borderRadius: stepShape != StepShape.circle
+                    ? BorderRadius.circular(stepRadius ?? 0)
+                    : null,
+                child: InkWell(
+                  onTap: onStepSelected,
+                  canRequestFocus: false,
+                  radius: radius,
+                  child: Container(
+                    width: radius * 3,
+                    height: radius * 1.3,
+                    decoration: BoxDecoration(
+                      shape: stepShape == StepShape.circle
+                          ? BoxShape.circle
+                          : BoxShape.rectangle,
+                      borderRadius: stepShape != StepShape.circle
+                          ? BorderRadius.circular(stepRadius ?? 0)
+                          : null,
+                      color: isFinished
+                          ? finishedBackgroundColor ??
+                              Theme.of(context).colorScheme.primary
+                          : isActive
+                              ? activeStepBackgroundColor ?? Colors.transparent
+                              : unreachedBackgroundColor ?? Colors.transparent,
+                    ),
+                    alignment: Alignment.center,
+                    child: showStepBorder
+                        ? EasyBorder(
+                            borderShape: stepShape == StepShape.circle
+                                ? BorderShape.Circle
+                                : BorderShape.RRect,
+                            radius: stepShape != StepShape.circle
+                                ? Radius.circular(stepRadius ?? 0)
+                                : const Radius.circular(0),
+                            color: isActive
+                                ? activeStepBorderColor ??
+                                    Theme.of(context).colorScheme.primary
+                                : isFinished
+                                    ? finishedBorderColor ?? Colors.transparent
+                                    : unreachedBorderColor ??
+                                        Colors.transparent,
+                            strokeWidth: borderThickness,
+                            dashPattern: borderType == BorderType.normal
+                                ? [1, 0]
+                                : dashPattern,
+                            child: isActive && showLoadingAnimation
+                                ? _buildLoadingIcon()
+                                : _buildIcon(context),
+                          )
+                        : isActive && showLoadingAnimation
                             ? _buildLoadingIcon()
                             : _buildIcon(context),
-                      )
-                    : isActive && showLoadingAnimation
-                        ? _buildLoadingIcon()
-                        : _buildIcon(context),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (isFinished)
+          Positioned(
+            top: 0,
+            right: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9999),
+              child: SvgPicture.asset(
+                'assets/svg/check_mark.svg',
+                width: 20,
               ),
             ),
-          ),
-          if (showTitle) const SizedBox(height: 10),
-          if (showTitle)
-            SizedBox(
-              width: (radius * 2) + (padding ?? 0),
-              child: step.customTitle ??
-                  Text(
-                    step.title ?? '',
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    softWrap: true,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: isActive
-                              ? activeTextColor ??
-                                  Theme.of(context).colorScheme.primary
-                              : isFinished
-                                  ? finishedTextColor ??
-                                      Theme.of(context).colorScheme.primary
-                                  : unreachedTextColor ?? Colors.grey.shade400,
-                          height: 1,
-                          fontSize: radius * 0.45,
-                        ),
-                  ),
-            ),
-        ],
-      ),
+          )
+      ],
     );
   }
 
   SizedBox _buildIcon(BuildContext context) {
     return SizedBox(
-      width: radius * 2,
-      height: radius * 2,
+      // width: radius * 3,
+      // height: radius * 1.3,
       child: Center(
         child: step.customStep ??
-            Icon(
-              isActive && step.activeIcon != null
-                  ? step.activeIcon!.icon
-                  : isFinished && step.finishIcon != null
-                      ? step.finishIcon!.icon
-                      : step.icon!.icon,
-              size: radius * 0.9,
+            Container(
               color: isFinished
-                  ? finishedIconColor ?? Colors.white
+                  ? Colors.transparent
                   : isActive
-                      ? activeIconColor ?? Theme.of(context).colorScheme.primary
-                      : unreachedIconColor ?? Colors.grey.shade400,
+                      ? Colors.transparent
+                      : unreachedIconColor ?? Colors.grey[300],
+              child: isActive && step.activeIcon != null
+                  ? step.activeIcon!
+                  : isFinished && step.finishIcon != null
+                      ? step.finishIcon!
+                      : step.icon!,
             ),
       ),
     );
