@@ -76,14 +76,12 @@ class BaseStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
+        SizedBox(
           width: (radius * 2) + (padding ?? 0),
           height: 45,
           child: Column(
             children: [
-              SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Material(
                 color: Colors.transparent,
                 shape:
