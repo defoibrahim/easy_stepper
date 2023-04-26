@@ -43,6 +43,8 @@ class BaseStep extends StatelessWidget {
     required this.dashPattern,
     required this.showStepBorder,
     required this.showLoadingAnimation,
+    required this.textDirection,
+    required this.lineLength,
   }) : super(key: key);
   final EasyStep step;
   final bool isActive;
@@ -73,6 +75,8 @@ class BaseStep extends StatelessWidget {
   final List<double> dashPattern;
   final bool showStepBorder;
   final bool showLoadingAnimation;
+  final TextDirection textDirection;
+  final double lineLength;
 
   @override
   Widget build(BuildContext context) {

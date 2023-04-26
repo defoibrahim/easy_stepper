@@ -66,7 +66,17 @@ class EasyStepper extends StatefulWidget {
   final BorderType? finishedStepBorderType;
 
   /// The color of the line that separates the steps.
-  final Color? lineColor;
+  /// If null, [Theme.of(context).colorScheme.primary] will be used.
+  final Color? defaultLineColor;
+
+  /// The color of the line that branches out from unreached steps.
+  final Color? unreachedLineColor;
+
+  /// The color of the line that branches out from active step.
+  final Color? activeLineColor;
+
+  /// The color of the line that branches out from finished steps.
+  final Color? finishedLineColor;
 
   /// The radius of a step.
   final double stepRadius;
@@ -98,8 +108,11 @@ class EasyStepper extends StatefulWidget {
   /// The type of the line [normal, dotted].
   final LineType lineType;
 
+  /// The amount of padding around every step.
+  final double internalPadding;
+
   /// The amount of padding around the stepper.
-  final double padding;
+  final EdgeInsetsDirectional padding;
 
   /// The animation effect to show when a step is reached.
   final Curve stepReachedAnimationEffect;
@@ -138,6 +151,9 @@ class EasyStepper extends StatefulWidget {
   /// Defaults to `True`
   final bool showLoadingAnimation;
 
+  /// Text Direction of the app.
+  final TextDirection textDirection;
+
   const EasyStepper({
     Key? key,
     required this.activeStep,
@@ -159,7 +175,10 @@ class EasyStepper extends StatefulWidget {
     this.finishedStepBackgroundColor,
     this.finishedStepBorderColor,
     this.finishedStepIconColor,
-    this.lineColor,
+    this.defaultLineColor,
+    this.unreachedLineColor,
+    this.activeLineColor,
+    this.finishedLineColor,
     this.stepRadius = 30,
     this.steppingEnabled = true,
     this.disableScroll = false,
@@ -168,7 +187,9 @@ class EasyStepper extends StatefulWidget {
     this.lineLength = 40,
     this.lineDotRadius = 1,
     this.lineSpace = 5,
-    this.padding = 8,
+    this.padding =
+        const EdgeInsetsDirectional.symmetric(horizontal: 10, vertical: 10),
+    this.internalPadding = 8,
     @Deprecated("use 'stepAnimationCurve' instead, This feature was deprecated after v0.1.4+1")
         this.stepReachedAnimationEffect = Curves.linear,
     this.stepAnimationCurve,
@@ -186,6 +207,7 @@ class EasyStepper extends StatefulWidget {
     this.dashPattern = const [3, 1],
     this.showStepBorder = true,
     this.showLoadingAnimation = true,
+    this.textDirection = TextDirection.ltr,
   }) : super(key: key);
 
   @override
@@ -225,7 +247,7 @@ class _EasyStepperState extends State<EasyStepper> {
     for (int i = 0; i < widget.steps.length; i++) {
       _scrollController!.animateTo(
         i *
-            ((widget.stepRadius * 1 + (widget.padding / 2)) +
+            ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
                 widget.lineLength),
         duration:
             widget.stepAnimationDuration ?? widget.stepReachedAnimationDuration,
@@ -256,7 +278,7 @@ class _EasyStepperState extends State<EasyStepper> {
               ? const NeverScrollableScrollPhysics()
               : const ClampingScrollPhysics(),
           controller: _scrollController,
-          padding: EdgeInsets.all(widget.padding),
+          padding: widget.padding,
           child: widget.direction == Axis.horizontal
               ? Row(
                   mainAxisSize: MainAxisSize.min,
@@ -314,13 +336,15 @@ class _EasyStepperState extends State<EasyStepper> {
       unreachedTextColor: widget.unreachedStepTextColor,
       unreachedIconColor: widget.unreachedStepIconColor,
       lottieAnimation: widget.loadingAnimation,
-      padding: widget.padding,
+      padding: widget.internalPadding,
       stepShape: widget.stepShape,
       stepRadius: widget.stepBorderRadius,
       borderType: _handleBorderType(index),
       dashPattern: widget.dashPattern,
       showStepBorder: widget.showStepBorder,
       showLoadingAnimation: widget.showLoadingAnimation,
+      textDirection: widget.textDirection,
+      lineLength: widget.lineLength,
       onStepSelected: widget.enableStepTapping
           ? () {
               if (widget.steppingEnabled) {
@@ -350,6 +374,24 @@ class _EasyStepperState extends State<EasyStepper> {
     }
   }
 
+  Color _getLineColor(int index) {
+    Color? preferredColor;
+    if (index == widget.activeStep) {
+      //Active Step
+      preferredColor = widget.activeLineColor;
+    } else if (index > widget.activeStep) {
+      //Unreached Step
+      preferredColor = widget.unreachedLineColor;
+    } else if (index < widget.activeStep) {
+      //Finished Step
+      preferredColor = widget.finishedLineColor;
+    }
+
+    return preferredColor ??
+        widget.defaultLineColor ??
+        Theme.of(context).colorScheme.primary;
+  }
+
   Widget _buildDottedLine(int index, Axis axis) {
     return index < widget.steps.length - 1
         ? Column(
@@ -363,7 +405,7 @@ class _EasyStepperState extends State<EasyStepper> {
                 ),
                 child: EasyLine(
                   length: widget.lineLength,
-                  color: widget.lineColor ?? Colors.blue,
+                  color: _getLineColor(index),
                   dotRadius: widget.lineDotRadius,
                   spacing: widget.lineSpace,
                   axis: axis,
