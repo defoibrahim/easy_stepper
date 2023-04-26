@@ -10,6 +10,9 @@ class EasyStepper extends StatefulWidget {
 
   /// Whether to allow tapping a step to move to that step or not.
   final bool enableStepTapping;
+  
+  /// .
+  final bool isFormsCompleted;
 
   /// Determines what should happen when a step is reached. This callback provides the __index__ of the step that was reached.
   final OnStepReached? onStepReached;
@@ -143,6 +146,7 @@ class EasyStepper extends StatefulWidget {
     this.enableStepTapping = true,
     this.direction = Axis.horizontal,
     this.onStepReached,
+    this.isFormsCompleted = false,
     this.unreachedStepBackgroundColor,
     this.unreachedStepTextColor,
     this.unreachedStepIconColor,
@@ -292,6 +296,7 @@ class _EasyStepperState extends State<EasyStepper> {
       step: step,
       radius: widget.stepRadius,
       showTitle: widget.showTitle,
+      isFormsCompleted: widget.isFormsCompleted,
       borderThickness: widget.borderThickness,
       isActive: index == widget.activeStep,
       isFinished: index < widget.activeStep,

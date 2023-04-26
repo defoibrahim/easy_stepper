@@ -17,6 +17,7 @@ class BaseStep extends StatelessWidget {
     required this.step,
     required this.isActive,
     required this.isFinished,
+    required this.isFormsCompleted,
     required this.isUnreached,
     required this.onStepSelected,
     required this.showTitle,
@@ -46,6 +47,7 @@ class BaseStep extends StatelessWidget {
   final EasyStep step;
   final bool isActive;
   final bool isFinished;
+  final bool isFormsCompleted;
   final bool isUnreached;
   final VoidCallback? onStepSelected;
   final double radius;
@@ -144,7 +146,7 @@ class BaseStep extends StatelessWidget {
             ],
           ),
         ),
-        if (isFinished)
+        if (isFinished || isFormsCompleted)
           Positioned(
             top: 0,
             right: 5,
