@@ -10,7 +10,7 @@ class EasyStepper extends StatefulWidget {
 
   /// Whether to allow tapping a step to move to that step or not.
   final bool enableStepTapping;
-  
+
   /// .
   final bool isFormsCompleted;
 
@@ -245,15 +245,64 @@ class _EasyStepperState extends State<EasyStepper> {
   void _afterLayout(_) {
     // ! Provide detailed explanation.
     for (int i = 0; i < widget.steps.length; i++) {
-      _scrollController!.animateTo(
-        i *
-            ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
-                widget.lineLength),
-        duration:
-            widget.stepAnimationDuration ?? widget.stepReachedAnimationDuration,
-        curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
-      );
-
+      if (widget.activeStep <= 3) {
+        _scrollController!.animateTo(
+          i * 0.1,
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
+      } else if (widget.activeStep < 10) {
+        _scrollController!.animateTo(
+          i *
+              ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
+                  widget.lineLength +
+                  widget.activeStep),
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
+      } else if (widget.activeStep < 20) {
+        _scrollController!.animateTo(
+          i *
+              ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
+                  widget.lineLength +
+                  widget.activeStep),
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
+      } else if (widget.activeStep < 30) {
+        _scrollController!.animateTo(
+          i *
+              ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
+                  widget.lineLength +
+                  20),
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
+      } else if (widget.activeStep < 40) {
+        _scrollController!.animateTo(
+          i *
+              ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
+                  widget.lineLength +
+                  24),
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
+      } else if (widget.activeStep < 50) {
+        _scrollController!.animateTo(
+          i *
+              ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
+                  widget.lineLength +
+                  30),
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
+      }
       if (_selectedIndex == i) break;
     }
   }
