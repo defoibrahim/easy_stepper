@@ -302,6 +302,16 @@ class _EasyStepperState extends State<EasyStepper> {
               widget.stepReachedAnimationDuration,
           curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
         );
+      } else {
+        _scrollController!.animateTo(
+          i *
+              ((widget.stepRadius * 1 + (widget.internalPadding / 2)) +
+                  widget.lineLength +
+                  widget.activeStep),
+          duration: widget.stepAnimationDuration ??
+              widget.stepReachedAnimationDuration,
+          curve: widget.stepAnimationCurve ?? widget.stepReachedAnimationEffect,
+        );
       }
       if (_selectedIndex == i) break;
     }
